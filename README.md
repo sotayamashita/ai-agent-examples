@@ -6,10 +6,51 @@
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
+
 ## Reasoning paradigms
 
-- ReACT ReAct (Reasoning and Action)
-- ReWOO ReWOO (Reasoning WithOut Observation)
+- [x] ReACT ReAct (Reasoning and Action)
+- [ ] ReWOO ReWOO (Reasoning WithOut Observation)
+
+## Getting started
+
+### Prerequisites
+
+- [ollama](https://ollama.com/l)
+- Python 3.12 or higher
+- [Poetry](https://python-poetry.org/docs/#installation) for dependency management
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd ai-agent
+   ```
+
+2. Install dependencies using Poetry:
+   ```bash
+   poetry install
+   ```
+
+### Usage
+
+1. Activate the Poetry shell:
+   ```bash
+   poetry shell
+   ```
+
+2. Download model with ollama:
+   ```bash
+   ollama pull mistral
+   ```
+
+   Note: You can see any other model supported by ollama by visiting [ollama models](https://ollama.com/search)
+
+3. Run the AI agent:
+   ```bash
+   python -m src.cli run
+   ```
 
 ## References
 

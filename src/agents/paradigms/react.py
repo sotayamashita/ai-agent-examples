@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from rich.console import Console
 from rich.panel import Panel
 
-from .base import BaseAgent
+from .base import BaseParadigm
 
 console = Console()
 
@@ -29,12 +29,11 @@ class Observation(BaseModel):
     content: str
 
 
-class ReACTAgent(BaseAgent):
+class ReActParadigm(BaseParadigm):
     """ReACT (Reasoning and Acting) Agent"""
 
     def __init__(self, model_name: str):
-        super().__init__()
-        self.model_name = model_name
+        super().__init__(model_name=model_name)
         self.history: List[Thought | Action | Observation] = []
 
     def run(self, goal: str, max_steps: int = 5, verbose: bool = False) -> None:

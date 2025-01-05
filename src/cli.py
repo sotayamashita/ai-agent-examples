@@ -1,136 +1,95 @@
 import sys
-from typing import Dict, List, Optional, Type
+from typing import NoReturn
 
-import fire
-import inquirer
+import click
+import requests
 from rich.console import Console
 
-from .agents import ReACTAgent, ReWOOAgent
-from .agents.base import BaseAgent
-from .clients import OllamaClient
-from .clients.ollama_client import Model
+from src.agents import ReActParadigm, ReWOOParadigm, SimpleReflexAgent
+from src.clients.ollama_client import OllamaClient
 
 console = Console()
 
-# CLI Questions configuration
-QUESTIONS = {
-    "model_selection": lambda models: inquirer.List(
-        "model",
-        message="Select a model to use",
-        choices=[(f"{model.name}", model.name) for model in models],
-    ),
-    "agent_selection": lambda agents: inquirer.List(
-        "agent",
-        message="Select an agent to use",
-        choices=[
-            (f"{name} - {agent_class.__doc__}", name)
-            for name, agent_class in agents.items()
-        ],
-    ),
-    "goal_input": inquirer.Text("goal", message="What is your goal?"),
+PARADIGMS = {"react": ReActParadigm, "rewoo": ReWOOParadigm}
+
+AGENT_TYPES = {
+    "simple-reflex": SimpleReflexAgent,
+    # TODO: Add other agent types after implementation
 }
 
 
-class AgentCLI:
-    """Command Line Interface for AI Agents
-
-    This class provides a CLI interface for interacting with different AI agents.
-    It supports listing available agents and running them with specified parameters.
-    """
-
-    def __init__(self):
-        self.agents: Dict[str, Type[BaseAgent]] = {
-            "react": ReACTAgent,
-            "rewoo": ReWOOAgent,
-        }
-
-        self.models: List[Model] = OllamaClient().models()
-
-    def _select_model(self) -> Optional[str]:
-        """Prompt user to select a model
-
-        Returns:
-            Optional[str]: Selected model name or None if cancelled
-        """
-        answers = inquirer.prompt([QUESTIONS["model_selection"](self.models)])
-        return answers["model"] if answers else None
-
-    def _select_agent(self) -> Optional[str]:
-        """Prompt user to select an agent
-
-        Returns:
-            Optional[str]: Selected agent name or None if cancelled
-        """
-        answers = inquirer.prompt([QUESTIONS["agent_selection"](self.agents)])
-        return answers["agent"] if answers else None
-
-    def _get_goal(self) -> Optional[str]:
-        """Prompt user to input their goal
-
-        Returns:
-            Optional[str]: User's goal or None if cancelled
-        """
-        answers = inquirer.prompt([QUESTIONS["goal_input"]])
-        return answers["goal"] if answers else None
-
-    def run(self, max_steps: int = 5, verbose: bool = False) -> None:
-        """Run the selected agent with specified parameters
-
-        Args:
-            max_steps (int): Maximum number of steps for the agent to take
-            verbose (bool): Whether to show detailed output
-        """
-        try:
-            # Select model
-            model_name = self._select_model()
-            if not model_name:
-                console.print("[yellow]Operation cancelled[/]")
-                return
-
-            # Select agent
-            agent_name = self._select_agent()
-            if not agent_name:
-                console.print("[yellow]Operation cancelled[/]")
-                return
-
-            if agent_name not in self.agents:
-                console.print(f"[red]Error:[/] Unknown agent type '{agent_name}'")
-                console.print("Available agents:", ", ".join(self.agents.keys()))
-                return
-
-            # Get goal
-            goal = self._get_goal()
-            if not goal:
-                console.print("[yellow]Operation cancelled[/]")
-                return
-
-            # Initialize and run agent
-            agent_class = self.agents[agent_name]
-            agent_instance = agent_class(model_name)
-
-            console.print(f"\n[bold]Running {agent_name} agent...[/]")
-            agent_instance.run(goal, max_steps, verbose)
-
-        except KeyboardInterrupt:
-            console.print("\n[yellow]Operation cancelled by user[/]")
-            sys.exit(1)
-        except Exception as e:
-            console.print(f"\n[red]Error:[/] {str(e)}")
-            console.print_exception()
-            sys.exit(1)
+def exit_with_error(message: str) -> NoReturn:
+    """Exit the program with an error message"""
+    console.print(f"[red]Error:[/] {message}")
+    console.print("\nPlease ensure:")
+    console.print("1. Ollama is installed (https://ollama.com)")
+    console.print("2. Ollama service is running")
+    console.print("3. You have pulled at least one model (e.g., 'ollama pull llama2')")
+    sys.exit(1)
 
 
-def main() -> None:
-    """CLI entry point"""
+def get_available_models() -> list[str]:
+    """Get list of available models from Ollama"""
     try:
-        fire.Fire(AgentCLI)
-    except KeyboardInterrupt:
-        console.print("\n[yellow]Operation cancelled by user[/]")
-        sys.exit(1)
+        client = OllamaClient()
+        models = client.models()
+        if not models:
+            exit_with_error("No models found in Ollama")
+        return [model.name.split(":")[0] for model in models]
+    except requests.exceptions.ConnectionError:
+        exit_with_error("Could not connect to Ollama. Is the service running?")
     except Exception as e:
-        console.print(f"\n[red]Error:[/] {str(e)}")
-        console.print_exception()
-        sys.exit(1)
+        exit_with_error(f"Failed to fetch models from Ollama: {str(e)}")
+
+
+@click.command()
+@click.option(
+    "--paradigm",
+    type=click.Choice(list(PARADIGMS.keys())),
+    default="react",
+    help="Select reasoning paradigm",
+)
+@click.option(
+    "--agent-type",
+    type=click.Choice(list(AGENT_TYPES.keys())),
+    default="simple-reflex",
+    help="Select AI agent type",
+)
+@click.option(
+    "--model",
+    type=click.Choice(get_available_models()),
+    default="llama2",
+    help="Select LLM model from available Ollama models",
+)
+@click.option("--max-steps", default=5, help="Maximum number of execution steps")
+@click.option("--verbose", is_flag=True, help="Show detailed logs")
+def main(
+    paradigm: str, agent_type: str, model: str, max_steps: int, verbose: bool
+) -> None:
+    """CLI for AI Agent experimentation
+
+    Allows experimenting with different combinations of reasoning paradigms and agent types.
+    """
+    console.print(f"[bold blue]Selected Configuration:[/]")
+    console.print(f"Paradigm: {paradigm}")
+    console.print(f"Agent Type: {agent_type}")
+    console.print(f"Model: {model}")
+    console.print(f"Max Steps: {max_steps}")
+    console.print(f"Verbose: {verbose}")
+
+    # Instantiate paradigm
+    paradigm_class = PARADIGMS[paradigm]
+    paradigm_instance = paradigm_class(model_name=model)
+
+    # Instantiate agent
+    agent_class = AGENT_TYPES[agent_type]
+    agent = agent_class(paradigm=paradigm_instance)
+
+    # Get goal from user
+    goal = click.prompt("\nEnter your goal", type=str)
+
+    # Run agent
+    agent.run(goal=goal, max_steps=max_steps, verbose=verbose)
 
 
 if __name__ == "__main__":

@@ -5,8 +5,6 @@ from typing import Any, Dict, List
 import requests
 from pydantic import BaseModel
 
-from .base import BaseClient
-
 
 class Model(BaseModel):
     name: str
@@ -17,7 +15,7 @@ class Model(BaseModel):
     details: Dict[str, Any]
 
 
-class OllamaClient(BaseClient):
+class OllamaClient:
     """Ollama API Client"""
 
     def __init__(self, base_url: str = "http://localhost:11434"):

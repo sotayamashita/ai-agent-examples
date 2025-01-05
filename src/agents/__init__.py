@@ -1,5 +1,6 @@
-from .base import BaseAgent
-from .react_agent import ReACTAgent
-from .rewoo_agent import ReWOOAgent
+"""AI Agents package"""
 
-__all__ = ["BaseAgent", "ReACTAgent", "ReWOOAgent"]
+from .paradigms import ReActParadigm, ReWOOParadigm
+from .types import SimpleReflexAgent
+
+__all__ = ["ReActParadigm", "ReWOOParadigm", "SimpleReflexAgent"]

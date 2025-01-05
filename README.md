@@ -186,7 +186,3 @@ Feel free to contribute by:
 - [IBM: What are AI agents?](https://www.ibm.com/think/topics/ai-agents)
 - [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629)
 - [ReWOO: Decoupling Reasoning from Observations for Efficient Augmented Language Models](https://arxiv.org/abs/2305.18323)
-
-## License
-
-MIT License

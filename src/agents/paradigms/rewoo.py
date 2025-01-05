@@ -3,7 +3,6 @@ from typing import Any, Dict, List
 
 from pydantic import BaseModel
 from rich.console import Console
-from rich.panel import Panel
 
 from .base import BaseParadigm
 
@@ -38,11 +37,13 @@ class ReWOOParadigm(BaseParadigm):
 
     def run(self, goal: str, max_steps: int = 5, verbose: bool = False) -> None:
         """Run ReWOO Paradigm"""
-        console.print(Panel(f"[bold blue]Goal:[/]\n{goal}"))
+        console.print("\n[bold blue]Goal:[/]")
+        console.print(goal)
+        console.print()
 
         # Plan phase
         self.plan = self._create_plan(goal)
-        console.print(Panel("[bold green]Plan:[/]", border_style="green"))
+        console.print("[bold green]Plan:[/]")
         for i, step in enumerate(self.plan.steps, 1):
             console.print(f"{i}. {step}")
 
@@ -55,21 +56,14 @@ class ReWOOParadigm(BaseParadigm):
 
             # Create action
             action = self._create_action(step)
-            console.print(
-                Panel(
-                    f"[bold yellow]Action:[/]\n{action.name}\nArgs: {action.args}",
-                    border_style="yellow",
-                )
-            )
+            console.print("\n[bold yellow]Action:[/]")
+            console.print(f"Name: {action.name}")
+            console.print(f"Args: {action.args}")
 
             # Execute action
             result = self._execute_action(action)
-            console.print(
-                Panel(
-                    f"[bold magenta]Result:[/]\n{result.content}",
-                    border_style="magenta",
-                )
-            )
+            console.print("\n[bold magenta]Result:[/]")
+            console.print(result.content)
 
             if verbose:
                 console.print("\n[bold]Current State:[/]")
@@ -98,15 +92,24 @@ Create a step-by-step plan to achieve this goal. Respond in JSON format:
     ]
 }}
 
-Do not include any other text, only return the JSON object."""
+The steps should be simple strings, not objects. Do not include any other text, only return the JSON object."""
 
         response = self.llm.generate(self.model_name, prompt)
         try:
             plan_data = json.loads(response)
+            # 応答が辞書のリストの場合は文字列に変換
+            if plan_data["steps"] and isinstance(plan_data["steps"][0], dict):
+                steps = [
+                    f"Step {step['id']}: {step['description']}"
+                    for step in plan_data["steps"]
+                ]
+                plan_data["steps"] = steps
             plan = Plan(steps=plan_data["steps"])
             return plan
         except json.JSONDecodeError:
             raise ValueError(f"Invalid plan format from LLM: {response}")
+        except (KeyError, TypeError) as e:
+            raise ValueError(f"Invalid plan structure from LLM: {str(e)}")
 
     def _create_action(self, step: str) -> Action:
         """Create an action for the given step"""

@@ -3,7 +3,6 @@ from typing import Any, Dict, List
 
 from pydantic import BaseModel
 from rich.console import Console
-from rich.panel import Panel
 
 from .base import BaseParadigm
 
@@ -40,7 +39,9 @@ class ReActParadigm(BaseParadigm):
         """Run ReACT Agent"""
         step = 0
 
-        console.print(Panel(f"[bold blue]Goal:[/]\n{goal}"))
+        console.print("\n[bold blue]Goal:[/]")
+        console.print(goal)
+        console.print()
 
         while step < max_steps:
             step += 1
@@ -48,35 +49,24 @@ class ReActParadigm(BaseParadigm):
 
             # Think
             thought = self.think(goal)
-            console.print(
-                Panel(
-                    f"[bold green]Thought:[/]\n{thought.content}", border_style="green"
-                )
-            )
+            console.print("\n[bold green]Thought:[/]")
+            console.print(thought.content)
 
             # Act
             action = self.act(thought)
-            console.print(
-                Panel(
-                    f"[bold yellow]Action:[/]\n{action.name}\nArgs: {action.args}",
-                    border_style="yellow",
-                )
-            )
+            console.print("\n[bold yellow]Action:[/]")
+            console.print(f"Name: {action.name}")
+            console.print(f"Args: {action.args}")
 
             # Observe
             observation = self.observe(action)
-            console.print(
-                Panel(
-                    f"[bold magenta]Observation:[/]\n{observation.content}",
-                    border_style="magenta",
-                )
-            )
+            console.print("\n[bold magenta]Observation:[/]")
+            console.print(observation.content)
 
             if verbose:
                 console.print("\n[bold]Current State:[/]")
                 console.print(self._build_context())
 
-            # 次のステップの確認
             if (
                 not input("\nPress Enter to continue, or 'q' to quit: ")
                 .lower()

@@ -172,6 +172,10 @@ Feel free to contribute by:
 3. Improving existing implementations
 4. Adding tests and documentation
 
+## Case Studies
+
+See [examples/case-studies](examples/case-studies) for detailed analysis of AI Agent implementations in production services.
+
 ## References
 
 - [Building effective agents](https://www.anthropic.com/research/building-effective-agents)
@@ -179,7 +183,3 @@ Feel free to contribute by:
   - Japanese translation: [AIエージェントとは](https://www.ibm.com/jp-ja/think/topics/ai-agents)
 - [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629)
 - [ReWOO: Decoupling Reasoning from Observations for Efficient Augmented Language Models](https://arxiv.org/abs/2305.18323)
-
-## Case Studies
-
-See [examples/case-studies](examples/case-studies) for detailed analysis of AI Agent implementations in production services.

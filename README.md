@@ -55,4 +55,4 @@
 - [What are AI agents?](https://www.ibm.com/think/topics/ai-agents)
 - [Building effective agents](https://www.anthropic.com/research/building-effective-agents)
 - [Agents](https://www.kaggle.com/whitepaper-agents)
-- [Practices for Governing Agentic AI Systems, December 14, 2023]([https://cdn.openai.com/papers/practices-for-governing-agentic-ai-systems.pdf](https://openai.com/index/practices-for-governing-agentic-ai-systems/))
+- [Practices for Governing Agentic AI Systems, December 14, 2023](https://openai.com/index/practices-for-governing-agentic-ai-systems/)

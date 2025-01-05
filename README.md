@@ -172,6 +172,40 @@ The CLI will provide specific error messages to help you identify and resolve an
 - Suitable for straightforward stimulus-response scenarios
 - Best for: quick decisions, simple tasks, immediate responses
 
+## Frequently Asked Questions
+
+### _What is an AI Agent?_
+
+TBD
+
+### _What is an AI Assistant?_
+
+TBD
+
+### _What is the difference between an AI Agent and an AI Assistant?_
+
+TBD
+
+### _What are Reasoning Paradigms?_
+
+TBD
+
+### _What is ReAct (Reasoning and Action)?_
+
+TBD
+
+### _What is ReWOO (Reasoning Without Observation)?_
+
+TBD
+
+### _What is the difference between ReAct and ReWOO?_
+
+TBD
+
+### _What are the different types of AI Agents?_
+
+TBD
+
 ## Contributing
 
 Feel free to contribute by:

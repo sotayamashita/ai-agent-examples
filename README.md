@@ -48,18 +48,10 @@ src/
 1. Install and start Ollama:
    - Visit [Ollama's official website](https://ollama.com/) for the latest installation instructions
    - Start the Ollama service
-   - Pull at least one model:
-   ```bash
-   # Just specify the model name without version
-   ollama pull llama2
-   ```
+   - Pull at least one model e.g. `ollama pull llama2`
    - For other available models, check [Ollama Model Library](https://ollama.com/search)
-
 2. Clone this repository
-3. Install dependencies:
-```bash
-poetry install
-```
+3. Install dependencies with `poetry install`
 
 ## Usage
 
@@ -171,40 +163,6 @@ The CLI will provide specific error messages to help you identify and resolve an
 - No internal state maintenance
 - Suitable for straightforward stimulus-response scenarios
 - Best for: quick decisions, simple tasks, immediate responses
-
-## Frequently Asked Questions
-
-### _What is an AI Agent?_
-
-TBD
-
-### _What is an AI Assistant?_
-
-TBD
-
-### _What is the difference between an AI Agent and an AI Assistant?_
-
-TBD
-
-### _What are Reasoning Paradigms?_
-
-TBD
-
-### _What is ReAct (Reasoning and Action)?_
-
-TBD
-
-### _What is ReWOO (Reasoning Without Observation)?_
-
-TBD
-
-### _What is the difference between ReAct and ReWOO?_
-
-TBD
-
-### _What are the different types of AI Agents?_
-
-TBD
 
 ## Contributing
 

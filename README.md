@@ -12,15 +12,13 @@
 - [x] ReACT ReAct (Reasoning and Action)
 - [ ] ReWOO ReWOO (Reasoning WithOut Observation)
 
-## Getting started
-
-### Prerequisites
+## Prerequisites
 
 - [ollama](https://ollama.com/l)
 - Python 3.12 or higher
 - [Poetry](https://python-poetry.org/docs/#installation) for dependency management
 
-### Installation
+## Installation
 
 1. Clone the repository:
    ```bash
@@ -33,7 +31,7 @@
    poetry install
    ```
 
-### Usage
+## Usage
 
 1. Activate the Poetry shell:
    ```bash

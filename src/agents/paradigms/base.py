@@ -7,8 +7,9 @@ from src.clients.ollama_client import OllamaClient
 class BaseParadigm(ABC):
     """Base class for reasoning paradigms"""
 
-    def __init__(self, model_name: str):
+    def __init__(self, model_name: str, language: str = "en"):
         self.model_name = model_name
+        self.language = language
         self.history: List[Any] = []
         self.llm = OllamaClient()
 

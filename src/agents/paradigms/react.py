@@ -31,8 +31,8 @@ class Observation(BaseModel):
 class ReActParadigm(BaseParadigm):
     """ReACT (Reasoning and Acting) Agent"""
 
-    def __init__(self, model_name: str):
-        super().__init__(model_name=model_name)
+    def __init__(self, model_name: str, language: str = "en"):
+        super().__init__(model_name=model_name, language=language)
         self.history: List[Thought | Action | Observation] = []
 
     def run(self, goal: str, max_steps: int = 5, verbose: bool = False) -> None:
@@ -85,7 +85,7 @@ class ReActParadigm(BaseParadigm):
 Previous steps:
 {context}
 
-Take a deep breath and think about what to do next to achieve the goal step by step. Respond in JSON format:
+Take a deep breath and think about what to do next to achieve the goal step by step. Please respond in {self.language} language. Respond in JSON format:
 {{
     "content": "I think ..."
 }}
@@ -106,7 +106,7 @@ Do not include any other text, only return the JSON object."""
         prompt = f"""Based on this thought:
 {thought.content}
 
-What action should be taken? Respond in JSON format:
+What action should be taken? Please respond in {self.language} language. Respond in JSON format:
 {{
     "name": "action_name",
     "args": {{
@@ -130,7 +130,7 @@ Do not include any other text, only return the JSON object."""
         prompt = f"""After taking this action:
 {action.name} with args {action.args}
 
-What would be observed? Respond directly with the observation."""
+What would be observed? Please respond in {self.language} language. Respond directly with the observation."""
 
         response = self.llm.generate(self.model_name, prompt)
         observation = Observation(content=response.strip())

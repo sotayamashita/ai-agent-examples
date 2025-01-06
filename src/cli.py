@@ -5,8 +5,9 @@ import click
 import requests
 from rich.console import Console
 
-from src.agents import ReActParadigm, ReWOOParadigm, SimpleReflexAgent
+from src.agents import ReActParadigm, ReWOOParadigm, SimpleReflexAgent, ModelBasedReflexAgent
 from src.clients.ollama_client import OllamaClient
+from src.examples.goals import GOALS
 
 console = Console()
 
@@ -14,6 +15,7 @@ PARADIGMS = {"react": ReActParadigm, "rewoo": ReWOOParadigm}
 
 AGENT_TYPES = {
     "simple-reflex": SimpleReflexAgent,
+    "model-based-reflex": ModelBasedReflexAgent,
     # TODO: Add other agent types after implementation
 }
 
@@ -42,6 +44,14 @@ def get_available_models() -> list[str]:
         exit_with_error(f"Failed to fetch models from Ollama: {str(e)}")
 
 
+def display_goals() -> None:
+    """List available example goals"""
+    console.print("\n[bold blue]Available Example Goals:[/]")
+    for name, goal in GOALS.items():
+        console.print(f"\n[bold]{name}[/]")
+        console.print(goal)
+
+
 @click.command()
 @click.option(
     "--paradigm",
@@ -63,23 +73,45 @@ def get_available_models() -> list[str]:
 )
 @click.option("--max-steps", default=5, help="Maximum number of execution steps")
 @click.option("--verbose", is_flag=True, help="Show detailed logs")
+@click.option(
+    "--language",
+    type=str,
+    default="en",
+    help="Language for LLM output (e.g., en, ja, zh)",
+)
+@click.option(
+    "--list-goals",
+    is_flag=True,
+    help="List available example goals",
+)
 def main(
-    paradigm: str, agent_type: str, model: str, max_steps: int, verbose: bool
+    paradigm: str,
+    agent_type: str,
+    model: str,
+    max_steps: int,
+    verbose: bool,
+    language: str,
+    list_goals: bool,
 ) -> None:
     """CLI for AI Agent experimentation
 
     Allows experimenting with different combinations of reasoning paradigms and agent types.
     """
+    if list_goals:
+        display_goals()
+        return
+
     console.print(f"[bold blue]Selected Configuration:[/]")
     console.print(f"Paradigm: {paradigm}")
     console.print(f"Agent Type: {agent_type}")
     console.print(f"Model: {model}")
     console.print(f"Max Steps: {max_steps}")
     console.print(f"Verbose: {verbose}")
+    console.print(f"Language: {language}")
 
     # Instantiate paradigm
     paradigm_class = PARADIGMS[paradigm]
-    paradigm_instance = paradigm_class(model_name=model)
+    paradigm_instance = paradigm_class(model_name=model, language=language)
 
     # Instantiate agent
     agent_class = AGENT_TYPES[agent_type]

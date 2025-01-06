@@ -31,8 +31,8 @@ class Result(BaseModel):
 class ReWOOParadigm(BaseParadigm):
     """ReWOO (Reasoning Without Observation) Paradigm"""
 
-    def __init__(self, model_name: str):
-        super().__init__(model_name=model_name)
+    def __init__(self, model_name: str, language: str = "en"):
+        super().__init__(model_name=model_name, language=language)
         self.plan: Plan | None = None
 
     def run(self, goal: str, max_steps: int = 5, verbose: bool = False) -> None:
@@ -83,7 +83,7 @@ class ReWOOParadigm(BaseParadigm):
         """Create a plan to achieve the goal"""
         prompt = f"""Goal: {goal}
 
-Create a step-by-step plan to achieve this goal. Respond in JSON format:
+Create a step-by-step plan to achieve this goal. Please respond in {self.language} language. Respond in JSON format:
 {{
     "steps": [
         "Step 1: ...",
@@ -116,7 +116,7 @@ The steps should be simple strings, not objects. Do not include any other text, 
         prompt = f"""For this step:
 {step}
 
-What action should be taken? Respond in JSON format:
+What action should be taken? Please respond in {self.language} language. Respond in JSON format:
 {{
     "name": "action_name",
     "args": {{
@@ -140,7 +140,7 @@ Do not include any other text, only return the JSON object."""
         prompt = f"""After taking this action:
 {action.name} with args {action.args}
 
-What would be the result? Respond directly with the result."""
+What would be the result? Please respond in {self.language} language. Respond directly with the result."""
 
         response = self.llm.generate(self.model_name, prompt)
         result = Result(content=response.strip())

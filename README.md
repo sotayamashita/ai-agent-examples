@@ -81,30 +81,6 @@ poetry run ai-agent --paradigm react --agent-type model-based-reflex --goal task
 - `--goal`: Select a pre-defined experimental goal
 - `--list-goals`: Show available experimental goals
 
-### Experimental Goals
-
-The following pre-defined goals are available for testing agent capabilities:
-
-1. **Task Management** (`task_management`)
-   ```bash
-   poetry run ai-agent --goal task_management
-   ```
-
-2. **Resource Allocation** (`resource_management`)
-   ```bash
-   poetry run ai-agent --goal resource_management
-   ```
-
-3. **Problem Solving** (`problem_solving`)
-   ```bash
-   poetry run ai-agent --goal problem_solving
-   ```
-
-4. **Learning and Adaptation** (`learning_adaptation`)
-   ```bash
-   poetry run ai-agent --goal learning_adaptation
-   ```
-
 ### Programmatic Usage
 
 ```python

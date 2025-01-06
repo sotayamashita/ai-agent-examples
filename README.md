@@ -23,105 +23,98 @@ An experimental playground for learning and exploring different AI Agent paradig
   - ReWOO (Reasoning Without Observation)
 - Different agent types:
   - Simple Reflex Agent
+  - Model-based Reflex Agent
   - More agent types coming soon...
 - Dynamic model selection from available Ollama models
+- Pre-defined experimental goals for agent testing
 
 ## Project Structure
 
 ```
 src/
 ├── agents/
-│   ├── paradigms/            # Reasoning paradigm implementations
-│   │   ├── base.py           # Base paradigm class
-│   │   ├── react.py          # ReAct paradigm
-│   │   └── rewoo.py          # ReWOO paradigm
-│   └── types/                # Agent type implementations
-│       ├── base.py           # Base agent type class
-│       └── simple_reflex.py  # Simple reflex agent
+│   ├── paradigms/                 # Reasoning paradigm implementations
+│   │   ├── base.py                # Base paradigm class
+│   │   ├── react.py               # ReAct paradigm
+│   │   └── rewoo.py               # ReWOO paradigm
+│   └── types/                     # Agent type implementations
+│       ├── base.py                # Base agent type class
+│       ├── simple_reflex.py       # Simple reflex agent
+│       └── model_based_reflex.py  # Model-based reflex agent
+├── examples/                      # Example goals and use cases
+│   ├── __init__.py                # Examples package initialization
+│   └── goals.py                   # Pre-defined goals for testing
 ├── clients/
-│   └── ollama_client.py      # Ollama API client
-└── cli.py                    # Command-line interface
+│   └── ollama_client.py           # Ollama API client
+└── cli.py                         # Command-line interface
 ```
-
-## Installation
-
-1. Install and start Ollama:
-   - Visit [Ollama's official website](https://ollama.com/) for the latest installation instructions
-   - Start the Ollama service
-   - Pull at least one model e.g. `ollama pull llama2`
-   - For other available models, check [Ollama Model Library](https://ollama.com/search)
-2. Clone this repository
-3. Install dependencies with `poetry install`
 
 ## Usage
 
 The CLI provides various options to experiment with different combinations of paradigms and agent types:
 
+### Basic Commands
+
 ```bash
 # List available options and models
 poetry run ai-agent --help
 
+# List available experimental goals
+poetry run ai-agent --list-goals
+
 # Run with default settings (ReAct paradigm + Simple Reflex agent)
 poetry run ai-agent
 
-# Use ReWOO paradigm with a specific model (just specify model name without version)
+# Use ReWOO paradigm with a specific model
 poetry run ai-agent --paradigm rewoo --model mistral
 
-# Show detailed logs
-poetry run ai-agent --verbose
-
-# Full configuration
-poetry run ai-agent --paradigm react --agent-type simple-reflex --model llama2 --max-steps 10 --verbose
+# Run a specific experimental goal
+poetry run ai-agent --paradigm react --agent-type model-based-reflex --goal task_management
 ```
 
-Available options:
+### Available Options
 - `--paradigm`: Choose reasoning paradigm (`react` or `rewoo`)
-- `--agent-type`: Choose agent type (`simple-reflex`)
-- `--model`: Select LLM model from available Ollama models (specify model name without version)
+- `--agent-type`: Choose agent type (`simple-reflex` or `model-based-reflex`)
+- `--model`: Select LLM model from available Ollama models
 - `--max-steps`: Set maximum number of steps
 - `--verbose`: Enable detailed logging
+- `--goal`: Select a pre-defined experimental goal
+- `--list-goals`: Show available experimental goals
 
-### Example Usage Scenarios
+### Experimental Goals
 
-Here are some practical examples of how to use the AI Agent with different goals:
+The following pre-defined goals are available for testing agent capabilities:
 
-#### 1. Task Planning and Organization
-```bash
-poetry run ai-agent --paradigm rewoo --model llama2
+1. **Task Management** (`task_management`)
+   ```bash
+   poetry run ai-agent --goal task_management
+   ```
 
-Enter your goal: Help me plan my workday. I have a team meeting at 10am, three urgent emails to respond to, a project deadline tomorrow, and I need to prepare for a client presentation next week.
-```
-ReWOO paradigm is suitable here as it plans all steps upfront.
+2. **Resource Allocation** (`resource_management`)
+   ```bash
+   poetry run ai-agent --goal resource_management
+   ```
 
-#### 2. Problem Analysis and Debugging
-```bash
-poetry run ai-agent --paradigm react --model mistral
+3. **Problem Solving** (`problem_solving`)
+   ```bash
+   poetry run ai-agent --goal problem_solving
+   ```
 
-Enter your goal: My Python web application is returning a 500 error when users try to upload files larger than 2MB. Help me identify potential causes and solutions.
-```
-ReAct paradigm works well here as it can think and adapt based on each observation.
+4. **Learning and Adaptation** (`learning_adaptation`)
+   ```bash
+   poetry run ai-agent --goal learning_adaptation
+   ```
 
-#### 3. Research and Information Gathering
-```bash
-poetry run ai-agent --paradigm react --model llama2 --verbose
+### Programmatic Usage
 
-Enter your goal: I need to research and compare different cloud providers (AWS, Azure, GCP) for hosting a machine learning application. Focus on pricing, scalability, and ML-specific services.
-```
-Verbose mode helps track the agent's thought process during research.
+```python
+from src.examples import get_available_goals, get_goal_description
 
-#### 4. Decision Making
-```bash
-poetry run ai-agent --paradigm rewoo --model mistral --max-steps 8
+# Get list of available goals
+goals = get_available_goals("react", "model_based_reflex")
 
-Enter your goal: Help me evaluate whether to migrate our application from a monolithic architecture to microservices. Consider team size (15 developers), current pain points (deployment delays, scaling issues), and business growth plans.
-```
-Extended steps allow for thorough analysis of complex decisions.
-
-#### 5. Code Review and Improvement
-```bash
-poetry run ai-agent --paradigm react --model llama2
-
-Enter your goal: Review my React component that handles user authentication. Look for security vulnerabilities, performance issues, and suggest best practices for improvement.
+# Get specific goal description
+description = get_goal_description("react", "model_based_reflex", "task_management")
 ```
 
 ### Model Names

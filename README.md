@@ -183,3 +183,5 @@ See [examples/case-studies](examples/case-studies) for detailed analysis of AI A
   - Japanese translation: [AIエージェントとは](https://www.ibm.com/jp-ja/think/topics/ai-agents)
 - [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629)
 - [ReWOO: Decoupling Reasoning from Observations for Efficient Augmented Language Models](https://arxiv.org/abs/2305.18323)
+- [Kaggle Agents](https://www.kaggle.com/whitepaper-agents)
+

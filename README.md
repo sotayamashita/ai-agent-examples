@@ -26,7 +26,6 @@ An experimental playground for learning and exploring different AI Agent paradig
   - Model-based Reflex Agent
   - More agent types coming soon...
 - Dynamic model selection from available Ollama models
-- Pre-defined experimental goals for agent testing
 
 ## Project Structure
 
@@ -41,9 +40,6 @@ src/
 │       ├── base.py                # Base agent type class
 │       ├── simple_reflex.py       # Simple reflex agent
 │       └── model_based_reflex.py  # Model-based reflex agent
-├── examples/                      # Example goals and use cases
-│   ├── __init__.py                # Examples package initialization
-│   └── goals.py                   # Pre-defined goals for testing
 ├── clients/
 │   └── ollama_client.py           # Ollama API client
 └── cli.py                         # Command-line interface
@@ -58,9 +54,6 @@ The CLI provides various options to experiment with different combinations of pa
 ```bash
 # List available options and models
 poetry run ai-agent --help
-
-# List available experimental goals
-poetry run ai-agent --list-goals
 
 # Run with default settings (ReAct paradigm + Simple Reflex agent)
 poetry run ai-agent
@@ -78,29 +71,6 @@ poetry run ai-agent --paradigm react --agent-type model-based-reflex --goal task
 - `--model`: Select LLM model from available Ollama models
 - `--max-steps`: Set maximum number of steps
 - `--verbose`: Enable detailed logging
-- `--goal`: Select a pre-defined experimental goal
-- `--list-goals`: Show available experimental goals
-
-### Programmatic Usage
-
-```python
-from src.examples import get_available_goals, get_goal_description
-
-# Get list of available goals
-goals = get_available_goals("react", "model_based_reflex")
-
-# Get specific goal description
-description = get_goal_description("react", "model_based_reflex", "task_management")
-```
-
-### Model Names
-
-When specifying a model name (either in the CLI or in code), you only need to provide the base model name without the version tag. For example:
-- Use `llama2` (not `llama2:latest`)
-- Use `mistral` (not `mistral:7b`)
-- Use `gemma` (not `gemma:7b`)
-
-The CLI will automatically handle the version information internally.
 
 ### Troubleshooting
 
@@ -132,14 +102,6 @@ The CLI will provide specific error messages to help you identify and resolve an
 - No internal state maintenance
 - Suitable for straightforward stimulus-response scenarios
 - Best for: quick decisions, simple tasks, immediate responses
-
-## Contributing
-
-Feel free to contribute by:
-1. Implementing new agent types
-2. Adding new reasoning paradigms
-3. Improving existing implementations
-4. Adding tests and documentation
 
 ## Case Studies
 

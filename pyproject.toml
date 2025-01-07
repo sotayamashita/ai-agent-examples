@@ -12,6 +12,7 @@ click = "^8.1.7"
 rich = "^13.7.0"
 pydantic = "^2.6.1"
 requests = "^2.32.3"
+inquirerpy = "^0.3.4"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.1.1"

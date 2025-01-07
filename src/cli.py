@@ -4,10 +4,10 @@ from typing import NoReturn
 import click
 import requests
 from rich.console import Console
+from InquirerPy import inquirer
 
 from src.agents import ReActParadigm, ReWOOParadigm, SimpleReflexAgent, ModelBasedReflexAgent
 from src.clients.ollama_client import OllamaClient
-from src.examples.goals import GOALS
 
 console = Console()
 
@@ -43,32 +43,52 @@ def get_available_models() -> list[str]:
     except Exception as e:
         exit_with_error(f"Failed to fetch models from Ollama: {str(e)}")
 
+def select_paradigm() -> str:
+    """Select reasoning paradigm interactively"""
+    return inquirer.select(
+        message="Select reasoning paradigm:",
+        choices=list(PARADIGMS.keys()),
+        default="react"
+    ).execute()
 
-def display_goals() -> None:
-    """List available example goals"""
-    console.print("\n[bold blue]Available Example Goals:[/]")
-    for name, goal in GOALS.items():
-        console.print(f"\n[bold]{name}[/]")
-        console.print(goal)
+def select_agent_type() -> str:
+    """Select agent type interactively"""
+    return inquirer.select(
+        message="Select agent type:",
+        choices=list(AGENT_TYPES.keys()),
+        default="simple-reflex"
+    ).execute()
+
+def select_model() -> str:
+    """Select model interactively"""
+    return inquirer.select(
+        message="Select model:",
+        choices=get_available_models(),
+    ).execute()
+
+def select_language() -> str:
+    """Select language interactively"""
+    return inquirer.select(
+        message="Select language:",
+        choices=["en", "ja"],
+        default="en"
+    ).execute()
 
 
 @click.command()
 @click.option(
     "--paradigm",
     type=click.Choice(list(PARADIGMS.keys())),
-    default="react",
     help="Select reasoning paradigm",
 )
 @click.option(
     "--agent-type",
     type=click.Choice(list(AGENT_TYPES.keys())),
-    default="simple-reflex",
     help="Select AI agent type",
 )
 @click.option(
     "--model",
     type=click.Choice(get_available_models()),
-    default="llama2",
     help="Select LLM model from available Ollama models",
 )
 @click.option("--max-steps", default=5, help="Maximum number of execution steps")
@@ -76,13 +96,7 @@ def display_goals() -> None:
 @click.option(
     "--language",
     type=str,
-    default="en",
-    help="Language for LLM output (e.g., en, ja, zh)",
-)
-@click.option(
-    "--list-goals",
-    is_flag=True,
-    help="List available example goals",
+    help="Language for LLM output (e.g., en, ja)",
 )
 def main(
     paradigm: str,
@@ -91,17 +105,29 @@ def main(
     max_steps: int,
     verbose: bool,
     language: str,
-    list_goals: bool,
 ) -> None:
     """CLI for AI Agent experimentation
 
     Allows experimenting with different combinations of reasoning paradigms and agent types.
     """
-    if list_goals:
-        display_goals()
-        return
-
     console.print(f"[bold blue]Selected Configuration:[/]")
+    
+    # If paradigm is not specified, select interactively
+    if not paradigm:
+        paradigm = select_paradigm()
+    
+    # If agent type is not specified, select interactively
+    if not agent_type:
+        agent_type = select_agent_type()
+
+    # If model is not specified, select interactively
+    if not model:
+        model = select_model()
+
+    # If language is not specified, select interactively
+    if not language:
+        language = select_language()
+    
     console.print(f"Paradigm: {paradigm}")
     console.print(f"Agent Type: {agent_type}")
     console.print(f"Model: {model}")
